@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>RoadPilot DoorDash PRO V5</title>
+<style>
+:root{--bg:#06101d;--panel:#0c1b2c;--panel2:#10263d;--line:#1e3b57;--text:#f2f7fc;--muted:#91a9bd;--blue:#49a5ff;--green:#20df88;--red:#ff5968;--yellow:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#123b63 0,transparent 40%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:10;background:#07111fee;backdrop-filter:blur(15px);border-bottom:1px solid var(--line);padding:13px 14px}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:21px;font-weight:950}.brand b{color:var(--blue)}.live{font-size:11px;color:var(--green);border:1px solid #1d6949;border-radius:20px;padding:5px 8px}
+nav{display:flex;gap:7px;overflow:auto;margin-top:11px}nav button{white-space:nowrap;border:1px solid var(--line);background:#10243a;color:var(--muted);padding:9px 11px;border-radius:11px;font-weight:750}nav button.active{background:#123b61;color:#fff;border-color:var(--blue)}
+main{max-width:950px;margin:auto;padding:18px 13px 80px}.hero{padding:8px 2px 15px}.hero h1{font-size:30px;line-height:1.05;margin:0 0 8px}.hero p{color:var(--muted);margin:0;line-height:1.5}
+.card{background:linear-gradient(145deg,#10243a,#0a1828);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 40px #0005;margin-top:12px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kpi .label{font-size:11px;color:var(--muted)}.kpi .value{font-size:22px;font-weight:900;margin-top:5px}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}label{font-size:12px;color:var(--muted)}input{width:100%;margin-top:5px;padding:13px;border-radius:12px;border:1px solid var(--line);background:#071522;color:#fff;font-size:18px;outline:0}input:focus{border-color:var(--blue)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button.primary,button.secondary{padding:13px 15px;border-radius:12px;font-weight:850;cursor:pointer}button.primary{border:0;background:linear-gradient(135deg,#1478d2,#4ba9ff);color:#fff}button.secondary{border:1px solid var(--line);background:#10243a;color:#fff}
+.result{text-align:center;padding:19px;border-radius:17px;margin-top:14px;border:1px solid var(--line);background:#081522}.decision{font-size:38px;font-weight:1000;letter-spacing:.3px}.accept{color:var(--green)}.reject{color:var(--red)}.review{color:var(--yellow)}.score{font-size:62px;font-weight:1000;line-height:1}.sub{color:var(--muted);font-size:13px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.metric{background:#071522;border:1px solid var(--line);border-radius:12px;padding:10px}.metric b{font-size:19px;display:block}.metric span{font-size:11px;color:var(--muted)}
+.goal{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.goal-value{font-size:32px;font-weight:1000}.goal-meta{color:var(--muted);font-size:12px}.goal-track{height:12px;border-radius:20px;background:#06111d;overflow:hidden;margin-top:10px}.goal-track i{display:block;height:100%;width:0;background:var(--green);transition:width .25s}.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.quick{background:#071522;border:1px solid var(--line);border-radius:12px;padding:11px}.quick b{font-size:20px;display:block}.quick span{font-size:11px;color:var(--muted)}
+.notice{font-size:13px;line-height:1.5;background:#0a2034;border:1px solid #1a527c;padding:12px;border-radius:12px;color:#c5def1}
+h2{font-size:18px;margin:0 0 9px}.mini{font-size:12px;color:var(--muted);line-height:1.5}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 5px;border-bottom:1px solid var(--line)}th{color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:18px}.hidden{display:none!important}.pill{display:inline-block;border:1px solid var(--line);padding:5px 8px;border-radius:15px;margin:2px;color:var(--muted);font-size:11px}
+.bar{height:9px;border-radius:20px;background:#06111d;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--green)}
+footer{text-align:center;color:#627c92;font-size:11px;padding:30px}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:27px}}
+
+/* Mapa integrado y estado del bot */
+.map-card{position:relative;overflow:hidden;min-height:310px;background:#071522;border:1px solid var(--line);border-radius:16px;margin-top:12px}
+.map-head{position:absolute;z-index:2;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.map-badge{background:#081522e8;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:11px;color:#d9eafa;backdrop-filter:blur(8px)}
+.map-badge b{color:var(--green)}
+.map-svg{display:block;width:100%;height:310px}
+.map-road{fill:none;stroke:#24445e;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.map-road2{fill:none;stroke:#315d7d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.map-route{fill:none;stroke:var(--blue);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:9 7;filter:drop-shadow(0 0 5px #49a5ff66)}
+.map-grid{stroke:#17324a;stroke-width:1}
+.map-label{font-size:10px;fill:#8ca9be;font-weight:700}
+.map-marker{filter:drop-shadow(0 3px 5px #0008)}
+.bot-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.bot-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.bot-dot{width:10px;height:10px;border-radius:50%;background:#657b8c;box-shadow:0 0 0 4px #657b8c22}
+.bot-dot.connected{background:var(--green);box-shadow:0 0 0 4px #20df8822}
+.manual-box{margin-top:12px;background:#10243a;border:1px solid #245477;border-radius:12px;padding:12px;font-size:13px;line-height:1.45;color:#cbe3f5}
+.manual-box b{color:#fff}
+
+
+#realMap{height:420px;width:100%;border-radius:16px;overflow:hidden;background:#081522}.leaflet-container{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b1723}.map-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.map-controls button{padding:11px 13px;border-radius:11px;border:1px solid var(--line);background:#10243a;color:#fff;font-weight:800}.map-controls .primary-map{background:linear-gradient(135deg,#1478d2,#4ba9ff);border:0}.route-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.route-stat{background:#071522;border:1px solid var(--line);border-radius:12px;padding:10px}.route-stat b{display:block;font-size:18px}.route-stat span{font-size:11px;color:var(--muted)}.map-help{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}@media(max-width:700px){#realMap{height:360px}.route-stats{grid-template-columns:1fr 1fr}.route-stat:last-child{grid-column:1/-1}}
+
+.offer-card{position:relative}.offer-title{display:flex;justify-content:space-between;align-items:center;gap:10px}.eyebrow{font-size:10px;color:var(--blue);font-weight:900;letter-spacing:1.4px}.connected-mini{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:6px 9px}.connected-mini.on{color:var(--green);border-color:#1d6949}.offer-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:9px}.pay-field input{font-size:25px;font-weight:900;border-color:#2c78a8}.quick-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.quick-summary div{background:#071522;border:1px solid var(--line);border-radius:12px;padding:10px}.quick-summary span{display:block;color:var(--muted);font-size:10px}.quick-summary b{display:block;font-size:19px;margin-top:4px}.big-actions .big-btn{flex:1;font-size:16px;min-height:50px}.compact{margin-top:10px;font-size:12px}.compact b{color:#fff}@media(max-width:700px){.offer-grid{grid-template-columns:1fr 1fr}.pay-field{grid-column:1/-1}.pay-field input{font-size:28px}.big-actions{position:sticky;bottom:8px;z-index:8;background:#07111fee;padding:7px;border-radius:14px;backdrop-filter:blur(10px);margin-left:-5px;margin-right:-5px}.big-actions .big-btn{min-height:54px}.quick-summary b{font-size:17px}}
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+<header>
+<div class="top"><div class="brand">ROAD<b>PILOT</b> DOORDASH</div><div class="live" id="botLive">● BOT DESCONECTADO</div></div>
+<nav>
+<button class="active" data-tab="analyze">🤖 Conectar bot</button>
+<button data-tab="history">📋 Historial</button>
+<button data-tab="stats">📊 Mis datos</button>
+<button data-tab="settings">⚙️ Configurar</button>
+</nav>
+</header>
+<main>
+<section id="analyze" class="tab">
+<div class="hero"><h1>🚗 Calcula tu oferta en segundos</h1><p>Mapa arriba, datos mínimos y resultado claro. Conecta el bot y registra cada oferta manualmente.</p></div>
+<div class="card">
+<div class="bot-row">
+  <div>
+    <h2 style="margin-bottom:4px">Estado del bot</h2>
+    <div class="bot-status"><span id="botDot" class="bot-dot"></span><span id="botStatus">Bot desconectado</span></div>
+  </div>
+  <button id="connectBtn" class="primary" onclick="connectBot()">🤖 CONECTAR BOT</button>
+</div>
+<div class="manual-box"><b>Importante:</b> el bot no inicia sesión ni acepta órdenes automáticamente. Para aumentar tus ingresos, debes colocar <b>cada oferta de DoorDash manualmente</b> en los campos de abajo.</div>
+</div>
+
+<div class="card">
+<div class="goal"><div><h2>🎯 Meta de hoy</h2><div class="goal-value" id="goalProgress">$0 / $0</div><div class="goal-meta" id="goalRemaining">Configura tu meta en Ajustes.</div></div><div class="pill" id="goalPct">0%</div></div><div class="goal-track"><i id="goalBar"></i></div><div class="quick-grid"><div class="quick"><b id="todayOrders">0</b><span>OFERTAS</span></div><div class="quick"><b id="todayMiles">0.0</b><span>MILLAS</span></div><div class="quick"><b id="todayNet">$0.00</b><span>NETO</span></div></div>
+</div>
+
+<div class="card map-main-card">
+<h2>🗺️ Mapa</h2>
+<div id="realMap"></div>
+<div class="formgrid" style="margin-top:10px"><label>Destino<input id="destinationSearch" type="text" placeholder="Restaurante, calle o dirección"></label><div style="display:flex;align-items:end"><button class="primary-map" style="width:100%" onclick="searchDestination()">🔎 Buscar destino</button></div></div>
+<div class="map-controls"><button class="primary-map" onclick="locateMe()">📍 Mi ubicación</button><button onclick="enableDestinationMode()">🎯 Elegir en mapa</button><button onclick="clearRoute()">↺ Limpiar</button></div>
+<div class="map-help" id="mapHelp">Primero usa tu ubicación y después selecciona el destino.</div>
+<div class="route-stats"><div class="route-stat"><b id="routeDistance">—</b><span>DISTANCIA</span></div><div class="route-stat"><b id="routeTime">—</b><span>TIEMPO</span></div><div class="route-stat"><b id="routeStatus">Esperando</b><span>ESTADO</span></div></div>
+</div>
+
+<div class="card offer-card">
+<div class="offer-title"><div><span class="eyebrow">OFERTA ACTUAL</span><h2>💰 Datos de la oferta</h2></div><div class="connected-mini" id="miniBot">● BOT OFF</div></div>
+<div class="offer-grid">
+<label class="pay-field">Pago ($)<input id="pay" type="number" step="0.01" inputmode="decimal" placeholder="12.50"></label>
+<label>Millas<input id="miles" type="number" step="0.1" inputmode="decimal" placeholder="5.4"></label>
+<label>Tiempo (min)<input id="minutes" type="number" step="1" inputmode="numeric" placeholder="24"></label>
+<label>Regreso / extra (mi)<input id="extra" type="number" step="0.1" inputmode="decimal" value="0" placeholder="0"></label>
+</div>
+<div class="quick-summary"><div><span>NETO / MI</span><b id="livePm">—</b></div><div><span>NETO / H</span><b id="livePh">—</b></div><div><span>NETO EST.</span><b id="liveNet">—</b></div></div>
+<div class="actions big-actions"><button class="primary big-btn" onclick="calculateOffer()">⚡ CALCULAR INGRESO</button><button class="secondary" onclick="clearForm()">Limpiar</button></div>
+<div id="result" class="result"><div class="sub">Introduce el pago. La ruta llenará automáticamente las millas y el tiempo cuando esté disponible.</div></div>
+<div class="manual-box compact"><b>Uso manual:</b> coloca cada oferta de DoorDash aquí. RoadPilot no inicia sesión ni acepta pedidos automáticamente.</div>
+</div>
+
+<div class="card">
+<div class="goal"><div><h2>🎯 Meta de hoy</h2><div class="goal-value" id="goalProgress">$0 / $0</div><div class="goal-meta" id="goalRemaining">Configura tu meta en Ajustes.</div></div><div class="pill" id="goalPct">0%</div></div><div class="goal-track"><i id="goalBar"></i></div><div class="quick-grid"><div class="quick"><b id="todayOrders">0</b><span>OFERTAS</span></div><div class="quick"><b id="todayMiles">0.0</b><span>MILLAS</span></div><div class="quick"><b id="todayNet">$0.00</b><span>NETO</span></div></div>
+</div>
+<div class="card">
+<h2>🎯 Tus reglas</h2>
+<div id="rules"></div>
+<p class="mini">El bot es un asistente: tú ingresas cada oferta manualmente y tú decides qué aceptar.</p>
+</div>
+</section>
+
+<section id="history" class="tab hidden">
+<div class="hero"><h1>📋 Historial de ofertas</h1><p>Compara las ofertas que registraste y descubre cuáles te dejan mejor rendimiento.</p></div>
+<div class="card"><div id="historyTable"></div><div class="actions"><button class="secondary" onclick="clearHistory()">Borrar historial</button></div></div>
+</section>
+
+<section id="stats" class="tab hidden">
+<div class="hero"><h1>📊 Tu rendimiento</h1><p>Estadísticas basadas en las ofertas que hayas guardado.</p></div>
+<div class="grid">
+<div class="card kpi"><div class="label">Ofertas registradas</div><div id="sCount" class="value">0</div></div>
+<div class="card kpi"><div class="label">Pago acumulado</div><div id="sPay" class="value">$0</div></div>
+<div class="card kpi"><div class="label">Promedio $/milla</div><div id="sPM" class="value">$0</div></div>
+<div class="card kpi"><div class="label">Promedio $/hora</div><div id="sPH" class="value">$0</div></div>
+</div>
+<div class="card" id="statsBox"></div>
+</section>
+
+<section id="settings" class="tab hidden">
+<div class="hero"><h1>⚙️ Configuración</h1><p>Configura tu vehículo y tus mínimos. Puedes cambiar estos valores cuando quieras.</p></div>
+<div class="card">
+<div class="formgrid">
+<label>Precio gasolina ($/galón)<input id="gas" type="number" step="0.01" value="3.50"></label>
+<label>Consumo del vehículo (MPG)<input id="mpg" type="number" step="0.1" value="25"></label>
+<label>Costo mantenimiento ($/milla)<input id="maint" type="number" step="0.01" value="0.10"></label>
+<label>Meta mínima $/milla<input id="targetMile" type="number" step="0.01" value="2.00"></label>
+<label>Meta mínima $/hora<input id="targetHour" type="number" step="0.50" value="25"></label>
+<label>Millas máximas recomendadas<input id="maxMiles" type="number" step="0.1" value="8"></label><label>Meta de ingresos diarios ($)<input id="dailyGoal" type="number" step="1" value="150"></label>
+</div>
+<div class="actions"><button class="primary" onclick="saveSettings()">💾 Guardar</button><button class="secondary" onclick="resetAll()">Restablecer datos</button></div>
+</div>
+<div class="card"><div class="notice">Los datos se guardan localmente en este dispositivo. RoadPilot no solicita credenciales de DoorDash, no inicia sesión en tu cuenta y no acepta ofertas automáticamente.</div></div>
+</section>
+
+<footer>RoadPilot DoorDash PRO V5 · Bot asistente independiente · Tú decides qué oferta aceptar.</footer>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const KEY="roadpilot_doordash_v5";
+let map=null,userMarker=null,destinationMarker=null,routeLine=null,destinationMode=false,userPoint=null,destinationPoint=null;
+function initMap(){if(map||!window.L)return;map=L.map('realMap').setView([39.5,-98.35],4);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);map.on('click',e=>{if(destinationMode){destinationMode=false;setDestination(e.latlng.lat,e.latlng.lng)}});setTimeout(()=>map.invalidateSize(),250)}
+function locateMe(){initMap();if(!navigator.geolocation){$('mapHelp').textContent='Este navegador no permite obtener ubicación.';return}$('mapHelp').textContent='Solicitando ubicación del teléfono…';navigator.geolocation.getCurrentPosition(pos=>{userPoint={lat:pos.coords.latitude,lon:pos.coords.longitude};if(userMarker)userMarker.remove();userMarker=L.marker([userPoint.lat,userPoint.lon]).addTo(map).bindPopup('📍 Tu ubicación').openPopup();map.setView([userPoint.lat,userPoint.lon],14);$('mapHelp').textContent='Ubicación obtenida. Pulsa «Elegir destino» y toca el destino en el mapa.';$('routeStatus').textContent='Ubicación lista'},()=>{$('mapHelp').textContent='No se pudo obtener la ubicación. Revisa el permiso de ubicación.'},{enableHighAccuracy:true,timeout:10000,maximumAge:30000})}
+function enableDestinationMode(){initMap();if(!userPoint){$('mapHelp').textContent='Primero pulsa «Usar mi ubicación».';return}destinationMode=true;$('mapHelp').textContent='Toca el punto de entrega en el mapa.';$('routeStatus').textContent='Elige destino'}
+function setDestination(lat,lon){destinationPoint={lat,lon};if(destinationMarker)destinationMarker.remove();destinationMarker=L.marker([lat,lon]).addTo(map).bindPopup('🎯 Destino de la oferta').openPopup();$('mapHelp').textContent='Destino seleccionado. Calculando ruta…';routeFromPoints(userPoint,destinationPoint)}
+async function routeFromPoints(a,b){try{const u=`https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=full&geometries=geojson`;const r=await fetch(u);if(!r.ok)throw Error();const d=await r.json();if(!d.routes?.length)throw Error();const rt=d.routes[0];if(routeLine)routeLine.remove();routeLine=L.geoJSON(rt.geometry,{style:{color:'#49a5ff',weight:6,opacity:.9}}).addTo(map);map.fitBounds(routeLine.getBounds(),{padding:[25,25]});const miles=rt.distance/1609.344,mins=rt.duration/60;$('routeDistance').textContent=miles.toFixed(1)+' mi';$('routeTime').textContent=Math.round(mins)+' min';$('routeStatus').textContent='Ruta lista';$('miles').value=miles.toFixed(1);$('minutes').value=Math.round(mins);$('mapHelp').textContent='Ruta calculada. Distancia y tiempo copiados al cálculo de la oferta.'}catch(e){$('routeStatus').textContent='Sin ruta';$('mapHelp').textContent='No fue posible calcular la ruta. Puedes introducir millas y minutos manualmente.'}}
+async function searchDestination(){initMap();const q=$("destinationSearch").value.trim();if(!q){$("mapHelp").textContent="Escribe una dirección o lugar para buscarlo.";return}$("mapHelp").textContent="Buscando destino…";try{const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}});const d=await r.json();if(!d.length)throw Error();const lat=+d[0].lat,lon=+d[0].lon;if(!userPoint){map.setView([lat,lon],14);if(destinationMarker)destinationMarker.remove();destinationMarker=L.marker([lat,lon]).addTo(map).bindPopup("🎯 Destino").openPopup();destinationPoint={lat,lon};$("mapHelp").textContent="Destino encontrado. Pulsa «Usar mi ubicación» para calcular la ruta.";return}setDestination(lat,lon)}catch(e){$("mapHelp").textContent="No encontramos ese destino. Prueba con una dirección más completa."}}
+function clearRoute(){if(routeLine)routeLine.remove();if(destinationMarker)destinationMarker.remove();destinationPoint=null;destinationMode=false;$('routeDistance').textContent='—';$('routeTime').textContent='—';$('routeStatus').textContent='Esperando';$('mapHelp').textContent='Pulsa «Usar mi ubicación» y después elige el destino en el mapa.'}
+
+let db=JSON.parse(localStorage.getItem(KEY)||"null")||{
+ settings:{gas:3.5,mpg:25,maint:.10,targetMile:2,targetHour:25,maxMiles:8,dailyGoal:150},orders:[]
+};
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function money(n){return "$"+Number(n||0).toFixed(2)}
+function settings(){return db.settings}
+function calc(){
+ const pay=+$("pay").value||0,miles=+$("miles").value||0,min=+$("minutes").value||0,extra=+$("extra").value||0;
+ const totalMiles=miles+extra,s=settings();
+ const fuel=totalMiles/s.mpg*s.gas,maint=totalMiles*s.maint,net=pay-fuel-maint;
+ const pm=totalMiles?net/totalMiles:0,ph=min?net/(min/60):0;
+ // Score emphasizes net $/mile and $/hour, with a penalty for long/empty distance.
+ let score=0;
+ score += Math.min(55,Math.max(0,pm/s.targetMile*55));
+ score += Math.min(35,Math.max(0,ph/s.targetHour*35));
+ score += totalMiles<=s.maxMiles?10:Math.max(0,10-(totalMiles-s.maxMiles)*2);
+ score=Math.round(Math.max(0,Math.min(100,score)));
+ let decision=score>=80?"ACCEPTAR":score>=60?"REVISAR":"RECHAZAR";
+ return {pay,miles,min,extra,totalMiles,fuel,maint,net,pm,ph,score,decision}
+}
+function connectBot(){
+ const btn=$("connectBtn"), dot=$("botDot"), status=$("botStatus"), live=$("botLive"), mini=$("miniBot");
+ const connected=btn.dataset.connected==="1";
+ if(connected){btn.dataset.connected="0";btn.textContent="🤖 CONECTAR BOT";dot.classList.remove("connected");status.textContent="Bot desconectado";live.textContent="● BOT DESCONECTADO";mini.textContent="● BOT OFF";mini.classList.remove("on");return;}
+ btn.dataset.connected="1";btn.textContent="✓ BOT CONECTADO";dot.classList.add("connected");status.textContent="Bot conectado";live.textContent="● BOT CONECTADO";mini.textContent="● BOT ON";mini.classList.add("on");
+ $("mapHelp").textContent="Bot conectado. Coloca cada oferta de DoorDash manualmente para calcular su rentabilidad.";
+}
+function analyze(saveIt=false){
+ const x=calc();
+ if(!x.pay||!x.miles){$("result").innerHTML='<div class="sub">Ingresa el pago y las millas de la oferta.</div>';return}
+ let cls=x.decision==="ACCEPTAR"?"accept":x.decision==="RECHAZAR"?"reject":"review";
+ let reason=x.decision==="ACCEPTAR"?"La orden supera tus mínimos configurados.":x.decision==="REVISAR"?"Está cerca de tus mínimos; revisa tráfico, estacionamiento y posible regreso vacío.":"La rentabilidad queda por debajo de tus mínimos. Considera esperar otra oportunidad.";
+ $("result").innerHTML=`<div class="decision ${cls}">${x.decision==="ACCEPTAR"?"🟢":x.decision==="REVISAR"?"🟡":"🔴"} ${x.decision}</div>
+ <div class="score ${cls}">${x.score}<span style="font-size:25px">/100</span></div>
+ <div class="sub">${reason}</div>
+ <div class="metrics">
+ <div class="metric"><b>${money(x.net)}</b><span>GANANCIA NETA EST.</span></div>
+ <div class="metric"><b>${money(x.pm)}</b><span>NETO / MILLA</span></div>
+ <div class="metric"><b>${money(x.ph)}</b><span>NETO / HORA</span></div>
+ <div class="metric"><b>${money(x.fuel)}</b><span>GASOLINA EST.</span></div>
+ <div class="metric"><b>${money(x.maint)}</b><span>MANTENIMIENTO</span></div>
+ <div class="metric"><b>${x.totalMiles.toFixed(1)}</b><span>MILLAS TOTALES</span></div>
+ </div>
+ <p class="mini">Cálculo: $${x.pay.toFixed(2)} − gasolina − mantenimiento. Las millas extra se suman al costo.</p>
+ <div class="actions"><button class="primary" onclick="saveCurrent()">💾 Guardar oferta</button></div>`;
+ if(saveIt) saveCurrent();
+}
+function updateLive(){const p=+$('pay').value||0,m=+$('miles').value||0,t=+$('minutes').value||0,e=+$('extra').value||0;if(!p||!m){$('livePm').textContent='—';$('livePh').textContent='—';$('liveNet').textContent='—';return}const z=calc();$('livePm').textContent=money(z.pm);$('livePh').textContent=money(z.ph);$('liveNet').textContent=money(z.net)}
+function calculateOffer(){analyze(false);const x=calc();if(x.pay&&x.miles){saveCurrent();}}
+['pay','miles','minutes','extra'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateLive));
+function saveCurrent(){
+ const x=calc();if(!x.pay||!x.miles)return;
+ db.orders.unshift({...x,id:Date.now(),date:new Date().toISOString()});save();renderAll();
+}
+function clearForm(){$("pay").value="";$("miles").value="";$("minutes").value="";$("extra").value=0;$("result").innerHTML='<div class="sub">Coloca una oferta de DoorDash manualmente para calcular su ingreso estimado.</div>'}
+function saveSettings(){db.settings.gas=+$("gas").value||3.5;db.settings.mpg=+$("mpg").value||25;db.settings.maint=+$("maint").value||0;db.settings.targetMile=+$("targetMile").value||2;db.settings.targetHour=+$("targetHour").value||25;db.settings.maxMiles=+$("maxMiles").value||8;db.settings.dailyGoal=+$("dailyGoal").value||150;save();renderAll();alert("Configuración guardada.")}
+function loadSettings(){let s=db.settings;$("gas").value=s.gas;$("mpg").value=s.mpg;$("maint").value=s.maint;$("targetMile").value=s.targetMile;$("targetHour").value=s.targetHour;$("maxMiles").value=s.maxMiles;$("dailyGoal").value=s.dailyGoal||150}
+function renderRules(){let s=db.settings;$("rules").innerHTML=`<span class="pill">🎯 ≥ ${money(s.targetMile)}/milla</span><span class="pill">⏱️ ≥ ${money(s.targetHour)}/hora</span><span class="pill">🛣️ ≤ ${s.maxMiles} millas recomendadas</span><span class="pill">⛽ ${money(s.gas)}/gal · ${s.mpg} MPG</span>`}
+function renderHistory(){
+ if(!db.orders.length){$("historyTable").innerHTML='<div class="empty">Todavía no has guardado órdenes.</div>';return}
+ $("historyTable").innerHTML=`<table><tr><th>Fecha</th><th>Pago</th><th>Millas</th><th>Neto/milla</th><th>Neto/h</th><th>Score</th><th>Decisión</th></tr>${db.orders.map(x=>`<tr><td>${new Date(x.date).toLocaleString()}</td><td>${money(x.pay)}</td><td>${x.totalMiles.toFixed(1)}</td><td>${money(x.pm)}</td><td>${money(x.ph)}</td><td>${x.score}</td><td>${x.decision}</td></tr>`).join("")}</table>`}
+function renderStats(){
+ let a=db.orders;if(!a.length){$("sCount").textContent=0;$("sPay").textContent="$0";$("sPM").textContent="$0";$("sPH").textContent="$0";$("statsBox").innerHTML='<div class="empty">Guarda algunas órdenes para obtener estadísticas.</div>';return}
+ let pay=a.reduce((z,x)=>z+x.pay,0),pm=a.reduce((z,x)=>z+x.pm,0)/a.length,ph=a.reduce((z,x)=>z+x.ph,0)/a.length,good=a.filter(x=>x.decision==="ACEPTAR").length;
+ $("sCount").textContent=a.length;$("sPay").textContent=money(pay);$("sPM").textContent=money(pm);$("sPH").textContent=money(ph);
+ let best=[...a].sort((x,y)=>y.pm-x.pm)[0],worst=[...a].sort((x,y)=>x.pm-y.pm)[0];
+ $("statsBox").innerHTML=`<h2>🧠 Lectura de tus datos</h2><p class="mini">Has marcado como buenas <b>${good}</b> de ${a.length} órdenes (${(good/a.length*100).toFixed(0)}%).</p><p>🏆 Mejor rendimiento: <b>${money(best.pm)}/milla</b> con una orden de ${money(best.pay)}.</p><p>⚠️ Peor rendimiento: <b>${money(worst.pm)}/milla</b>. Estas órdenes pueden estar reduciendo tu promedio.</p><div class="bar"><i style="width:${Math.min(100,pm/db.settings.targetMile*100)}%"></i></div><p class="mini">Tu promedio neto por milla está al ${(pm/db.settings.targetMile*100).toFixed(0)}% de tu meta.</p>`}
+function clearHistory(){if(confirm("¿Borrar todas las órdenes guardadas?")){db.orders=[];save();renderAll()}}
+function resetAll(){if(confirm("Esto borrará toda la configuración y el historial. ¿Continuar?")){localStorage.removeItem(KEY);location.reload()}}
+function todayOrders(){const d=new Date();return db.orders.filter(x=>{const z=new Date(x.date);return z.getFullYear()===d.getFullYear()&&z.getMonth()===d.getMonth()&&z.getDate()===d.getDate()})}
+function renderToday(){const a=todayOrders(),net=a.reduce((z,x)=>z+x.net,0),miles=a.reduce((z,x)=>z+x.totalMiles,0),goal=db.settings.dailyGoal||150,pct=Math.min(100,goal?net/goal*100:0);$("goalProgress").textContent=`${money(net)} / ${money(goal)}`;$("goalPct").textContent=Math.round(pct)+"%";$("goalBar").style.width=pct+"%";$("todayOrders").textContent=a.length;$("todayMiles").textContent=miles.toFixed(1);$("todayNet").textContent=money(net);$("goalRemaining").textContent=net>=goal?"🎉 Meta alcanzada. Sigue registrando tu jornada.":`Te faltan ${money(goal-net)} para llegar a tu meta.`}
+function renderAll(){loadSettings();renderRules();renderHistory();renderStats();renderToday()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderAll();if(b.dataset.tab==="analyze")setTimeout(()=>map&&map.invalidateSize(),100)});
+renderAll();
+initMap();
+</script>
+</body>
+</html>
