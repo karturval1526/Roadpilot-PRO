@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>RoadPilot DoorDash PRO</title>
+<style>
+:root{--bg:#06101d;--panel:#0c1b2c;--panel2:#10263d;--line:#1e3b57;--text:#f2f7fc;--muted:#91a9bd;--blue:#49a5ff;--green:#20df88;--red:#ff5968;--yellow:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#123b63 0,transparent 40%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:10;background:#07111fee;backdrop-filter:blur(15px);border-bottom:1px solid var(--line);padding:13px 14px}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:21px;font-weight:950}.brand b{color:var(--blue)}.live{font-size:11px;color:var(--green);border:1px solid #1d6949;border-radius:20px;padding:5px 8px}
+nav{display:flex;gap:7px;overflow:auto;margin-top:11px}nav button{white-space:nowrap;border:1px solid var(--line);background:#10243a;color:var(--muted);padding:9px 11px;border-radius:11px;font-weight:750}nav button.active{background:#123b61;color:#fff;border-color:var(--blue)}
+main{max-width:950px;margin:auto;padding:18px 13px 80px}.hero{padding:8px 2px 15px}.hero h1{font-size:30px;line-height:1.05;margin:0 0 8px}.hero p{color:var(--muted);margin:0;line-height:1.5}
+.card{background:linear-gradient(145deg,#10243a,#0a1828);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 14px 40px #0005;margin-top:12px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kpi .label{font-size:11px;color:var(--muted)}.kpi .value{font-size:22px;font-weight:900;margin-top:5px}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}label{font-size:12px;color:var(--muted)}input{width:100%;margin-top:5px;padding:13px;border-radius:12px;border:1px solid var(--line);background:#071522;color:#fff;font-size:18px;outline:0}input:focus{border-color:var(--blue)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button.primary,button.secondary{padding:13px 15px;border-radius:12px;font-weight:850;cursor:pointer}button.primary{border:0;background:linear-gradient(135deg,#1478d2,#4ba9ff);color:#fff}button.secondary{border:1px solid var(--line);background:#10243a;color:#fff}
+.result{text-align:center;padding:19px;border-radius:17px;margin-top:14px;border:1px solid var(--line);background:#081522}.decision{font-size:38px;font-weight:1000;letter-spacing:.3px}.accept{color:var(--green)}.reject{color:var(--red)}.review{color:var(--yellow)}.score{font-size:62px;font-weight:1000;line-height:1}.sub{color:var(--muted);font-size:13px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.metric{background:#071522;border:1px solid var(--line);border-radius:12px;padding:10px}.metric b{font-size:19px;display:block}.metric span{font-size:11px;color:var(--muted)}
+.notice{font-size:13px;line-height:1.5;background:#0a2034;border:1px solid #1a527c;padding:12px;border-radius:12px;color:#c5def1}
+h2{font-size:18px;margin:0 0 9px}.mini{font-size:12px;color:var(--muted);line-height:1.5}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 5px;border-bottom:1px solid var(--line)}th{color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:18px}.hidden{display:none!important}.pill{display:inline-block;border:1px solid var(--line);padding:5px 8px;border-radius:15px;margin:2px;color:var(--muted);font-size:11px}
+.bar{height:9px;border-radius:20px;background:#06111d;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--green)}
+footer{text-align:center;color:#627c92;font-size:11px;padding:30px}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:27px}}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><div class="brand">ROAD<b>PILOT</b> DOORDASH</div><div class="live">● ANALIZADOR</div></div>
+<nav>
+<button class="active" data-tab="analyze">⚡ Analizar orden</button>
+<button data-tab="history">📋 Historial</button>
+<button data-tab="stats">📊 Mis datos</button>
+<button data-tab="settings">⚙️ Configurar</button>
+</nav>
+</header>
+<main>
+<section id="analyze" class="tab">
+<div class="hero"><h1>¿Esta orden de DoorDash conviene?</h1><p>Introduce los datos que muestra DoorDash. RoadPilot calcula el costo real y te dice si la oportunidad alcanza tu objetivo.</p></div>
+<div class="card">
+<div class="formgrid">
+<label>Pago de la orden ($)<input id="pay" type="number" step="0.01" inputmode="decimal" placeholder="Ej. 12.50"></label>
+<label>Millas mostradas<input id="miles" type="number" step="0.1" inputmode="decimal" placeholder="Ej. 5.4"></label>
+<label>Tiempo estimado (min)<input id="minutes" type="number" step="1" inputmode="numeric" placeholder="Ej. 24"></label>
+<label>Millas extra / regreso<input id="extra" type="number" step="0.1" inputmode="decimal" value="0" placeholder="0 si no aplica"></label>
+</div>
+<div class="actions"><button class="primary" onclick="analyze(true)">⚡ ANALIZAR AHORA</button><button class="secondary" onclick="clearForm()">Limpiar</button></div>
+<div id="result" class="result"><div class="sub">Introduce una oferta de DoorDash para analizarla.</div></div>
+</div>
+<div class="card">
+<h2>🎯 Tus reglas</h2>
+<div id="rules"></div>
+<p class="mini">RoadPilot no acepta ni rechaza órdenes automáticamente. Tú mantienes el control.</p>
+</div>
+</section>
+
+<section id="history" class="tab hidden">
+<div class="hero"><h1>📋 Historial de decisiones</h1><p>Compara las órdenes que analizaste y descubre cuáles te dejan mejor rendimiento.</p></div>
+<div class="card"><div id="historyTable"></div><div class="actions"><button class="secondary" onclick="clearHistory()">Borrar historial</button></div></div>
+</section>
+
+<section id="stats" class="tab hidden">
+<div class="hero"><h1>📊 Tu rendimiento</h1><p>Estadísticas basadas en las órdenes que hayas guardado.</p></div>
+<div class="grid">
+<div class="card kpi"><div class="label">Órdenes analizadas</div><div id="sCount" class="value">0</div></div>
+<div class="card kpi"><div class="label">Pago acumulado</div><div id="sPay" class="value">$0</div></div>
+<div class="card kpi"><div class="label">Promedio $/milla</div><div id="sPM" class="value">$0</div></div>
+<div class="card kpi"><div class="label">Promedio $/hora</div><div id="sPH" class="value">$0</div></div>
+</div>
+<div class="card" id="statsBox"></div>
+</section>
+
+<section id="settings" class="tab hidden">
+<div class="hero"><h1>⚙️ Configuración</h1><p>Configura tu vehículo y tus mínimos. Puedes cambiar estos valores cuando quieras.</p></div>
+<div class="card">
+<div class="formgrid">
+<label>Precio gasolina ($/galón)<input id="gas" type="number" step="0.01" value="3.50"></label>
+<label>Consumo del vehículo (MPG)<input id="mpg" type="number" step="0.1" value="25"></label>
+<label>Costo mantenimiento ($/milla)<input id="maint" type="number" step="0.01" value="0.10"></label>
+<label>Meta mínima $/milla<input id="targetMile" type="number" step="0.01" value="2.00"></label>
+<label>Meta mínima $/hora<input id="targetHour" type="number" step="0.50" value="25"></label>
+<label>Millas máximas recomendadas<input id="maxMiles" type="number" step="0.1" value="8"></label>
+</div>
+<div class="actions"><button class="primary" onclick="saveSettings()">💾 Guardar</button><button class="secondary" onclick="resetAll()">Restablecer datos</button></div>
+</div>
+<div class="card"><div class="notice">Los datos se guardan localmente en este dispositivo. RoadPilot no solicita credenciales de DoorDash y no inicia sesión en tu cuenta.</div></div>
+</section>
+
+<footer>RoadPilot DoorDash PRO · Analizador independiente · Tú decides qué orden aceptar.</footer>
+</main>
+
+<script>
+const KEY="roadpilot_doordash_v1";
+let db=JSON.parse(localStorage.getItem(KEY)||"null")||{
+ settings:{gas:3.5,mpg:25,maint:.10,targetMile:2,targetHour:25,maxMiles:8},orders:[]
+};
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function money(n){return "$"+Number(n||0).toFixed(2)}
+function settings(){return db.settings}
+function calc(){
+ const pay=+$("pay").value||0,miles=+$("miles").value||0,min=+$("minutes").value||0,extra=+$("extra").value||0;
+ const totalMiles=miles+extra,s=settings();
+ const fuel=totalMiles/s.mpg*s.gas,maint=totalMiles*s.maint,net=pay-fuel-maint;
+ const pm=totalMiles?net/totalMiles:0,ph=min?net/(min/60):0;
+ // Score emphasizes net $/mile and $/hour, with a penalty for long/empty distance.
+ let score=0;
+ score += Math.min(55,Math.max(0,pm/s.targetMile*55));
+ score += Math.min(35,Math.max(0,ph/s.targetHour*35));
+ score += totalMiles<=s.maxMiles?10:Math.max(0,10-(totalMiles-s.maxMiles)*2);
+ score=Math.round(Math.max(0,Math.min(100,score)));
+ let decision=score>=80?"ACCEPTAR":score>=60?"REVISAR":"RECHAZAR";
+ return {pay,miles,min,extra,totalMiles,fuel,maint,net,pm,ph,score,decision}
+}
+function analyze(saveIt=false){
+ const x=calc();
+ if(!x.pay||!x.miles){$("result").innerHTML='<div class="sub">Ingresa pago y millas para analizar.</div>';return}
+ let cls=x.decision==="ACCEPTAR"?"accept":x.decision==="RECHAZAR"?"reject":"review";
+ let reason=x.decision==="ACCEPTAR"?"La orden supera tus mínimos configurados.":x.decision==="REVISAR"?"Está cerca de tus mínimos; revisa tráfico, estacionamiento y posible regreso vacío.":"La rentabilidad queda por debajo de tus mínimos. Considera esperar otra oportunidad.";
+ $("result").innerHTML=`<div class="decision ${cls}">${x.decision==="ACCEPTAR"?"🟢":x.decision==="REVISAR"?"🟡":"🔴"} ${x.decision}</div>
+ <div class="score ${cls}">${x.score}<span style="font-size:25px">/100</span></div>
+ <div class="sub">${reason}</div>
+ <div class="metrics">
+ <div class="metric"><b>${money(x.net)}</b><span>GANANCIA NETA EST.</span></div>
+ <div class="metric"><b>${money(x.pm)}</b><span>NETO / MILLA</span></div>
+ <div class="metric"><b>${money(x.ph)}</b><span>NETO / HORA</span></div>
+ <div class="metric"><b>${money(x.fuel)}</b><span>GASOLINA EST.</span></div>
+ <div class="metric"><b>${money(x.maint)}</b><span>MANTENIMIENTO</span></div>
+ <div class="metric"><b>${x.totalMiles.toFixed(1)}</b><span>MILLAS TOTALES</span></div>
+ </div>
+ <p class="mini">Cálculo: $${x.pay.toFixed(2)} − gasolina − mantenimiento. Las millas extra se suman al costo.</p>
+ <div class="actions"><button class="primary" onclick="saveCurrent()">💾 Guardar análisis</button></div>`;
+ if(saveIt) saveCurrent();
+}
+function saveCurrent(){
+ const x=calc();if(!x.pay||!x.miles)return;
+ db.orders.unshift({...x,id:Date.now(),date:new Date().toISOString()});save();renderAll();
+}
+function clearForm(){$("pay").value="";$("miles").value="";$("minutes").value="";$("extra").value=0;$("result").innerHTML='<div class="sub">Introduce una oferta de DoorDash para analizarla.</div>'}
+function saveSettings(){db.settings.gas=+$("gas").value||3.5;db.settings.mpg=+$("mpg").value||25;db.settings.maint=+$("maint").value||0;db.settings.targetMile=+$("targetMile").value||2;db.settings.targetHour=+$("targetHour").value||25;db.settings.maxMiles=+$("maxMiles").value||8;save();renderAll();alert("Configuración guardada.")}
+function loadSettings(){let s=db.settings;$("gas").value=s.gas;$("mpg").value=s.mpg;$("maint").value=s.maint;$("targetMile").value=s.targetMile;$("targetHour").value=s.targetHour;$("maxMiles").value=s.maxMiles}
+function renderRules(){let s=db.settings;$("rules").innerHTML=`<span class="pill">🎯 ≥ ${money(s.targetMile)}/milla</span><span class="pill">⏱️ ≥ ${money(s.targetHour)}/hora</span><span class="pill">🛣️ ≤ ${s.maxMiles} millas recomendadas</span><span class="pill">⛽ ${money(s.gas)}/gal · ${s.mpg} MPG</span>`}
+function renderHistory(){
+ if(!db.orders.length){$("historyTable").innerHTML='<div class="empty">Todavía no has guardado órdenes.</div>';return}
+ $("historyTable").innerHTML=`<table><tr><th>Fecha</th><th>Pago</th><th>Millas</th><th>Neto/milla</th><th>Neto/h</th><th>Score</th><th>Decisión</th></tr>${db.orders.map(x=>`<tr><td>${new Date(x.date).toLocaleString()}</td><td>${money(x.pay)}</td><td>${x.totalMiles.toFixed(1)}</td><td>${money(x.pm)}</td><td>${money(x.ph)}</td><td>${x.score}</td><td>${x.decision}</td></tr>`).join("")}</table>`}
+function renderStats(){
+ let a=db.orders;if(!a.length){$("sCount").textContent=0;$("sPay").textContent="$0";$("sPM").textContent="$0";$("sPH").textContent="$0";$("statsBox").innerHTML='<div class="empty">Guarda algunas órdenes para obtener estadísticas.</div>';return}
+ let pay=a.reduce((z,x)=>z+x.pay,0),pm=a.reduce((z,x)=>z+x.pm,0)/a.length,ph=a.reduce((z,x)=>z+x.ph,0)/a.length,good=a.filter(x=>x.decision==="ACEPTAR").length;
+ $("sCount").textContent=a.length;$("sPay").textContent=money(pay);$("sPM").textContent=money(pm);$("sPH").textContent=money(ph);
+ let best=[...a].sort((x,y)=>y.pm-x.pm)[0],worst=[...a].sort((x,y)=>x.pm-y.pm)[0];
+ $("statsBox").innerHTML=`<h2>🧠 Lectura de tus datos</h2><p class="mini">Has marcado como buenas <b>${good}</b> de ${a.length} órdenes (${(good/a.length*100).toFixed(0)}%).</p><p>🏆 Mejor rendimiento: <b>${money(best.pm)}/milla</b> con una orden de ${money(best.pay)}.</p><p>⚠️ Peor rendimiento: <b>${money(worst.pm)}/milla</b>. Estas órdenes pueden estar reduciendo tu promedio.</p><div class="bar"><i style="width:${Math.min(100,pm/db.settings.targetMile*100)}%"></i></div><p class="mini">Tu promedio neto por milla está al ${(pm/db.settings.targetMile*100).toFixed(0)}% de tu meta.</p>`}
+function clearHistory(){if(confirm("¿Borrar todas las órdenes guardadas?")){db.orders=[];save();renderAll()}}
+function resetAll(){if(confirm("Esto borrará toda la configuración y el historial. ¿Continuar?")){localStorage.removeItem(KEY);location.reload()}}
+function renderAll(){loadSettings();renderRules();renderHistory();renderStats()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderAll()});
+renderAll();
+</script>
+</body>
+</html>
